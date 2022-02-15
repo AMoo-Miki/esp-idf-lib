@@ -1,0 +1,27 @@
+---
+components:
+  - name: ens160
+    description: |
+      Driver ENS160
+    group: air-quality
+    groups:
+      - name: gas
+    code_owners:
+      - name: MyMila
+    depends:
+      - name: i2cdev
+      - name: log
+      - name: esp_idf_lib_helpers
+    thread_safe: yes
+    targets:
+      - name: esp32
+      - name: esp8266
+      - name: esp32s2
+      - name: esp32c3
+    licenses:
+      - name: BSD-3
+    copyrights:
+      - name: MyMila
+        year: 2022
+      - name: msia3dev
+        year: 2022
