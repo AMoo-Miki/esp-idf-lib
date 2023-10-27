@@ -212,7 +212,7 @@ esp_err_t ens160_set_environmental_data(i2c_dev_t *dev, float temperature, float
  * @return
  */
 esp_err_t
-ens160_measure(i2c_dev_t *dev, bool wait_for_new, ens160_aqi_t *aqi, uint16_t *tvoc, uint16_t *eco2,
+ens160_get_results(i2c_dev_t *dev, bool wait_for_new, ens160_aqi_t *aqi, uint16_t *tvoc, uint16_t *eco2,
                uint32_t (*resistance)[4], uint32_t (*baseline)[4]);
 
 /**
