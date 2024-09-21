@@ -87,6 +87,11 @@ esp_err_t ens160_init(i2c_dev_t *dev)
         goto err;
     }
 
+    if (ens160_set_mode(dev, ENS160_OPMODE_STD) != ESP_OK) {
+        res = ESP_FAIL;
+        goto err;
+    }
+
 err:
     if (res == ESP_FAIL) {
         i2c_dev_delete_mutex(dev);
