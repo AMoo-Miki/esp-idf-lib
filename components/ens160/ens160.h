@@ -18,26 +18,25 @@ extern "C" {
 #define ENS160_BOOTING_MS                50
 
 // 7-bit I2C slave address of the ENS160
-#define ENS160_I2CADDR_0            0x52        //ADDR low
-#define ENS160_I2CADDR_1            0x53        //ADDR high
+#define ENS160_I2CADDR_0             0x52        //ADDR low
+#define ENS160_I2CADDR_1             0x53        //ADDR high
 
 // ENS160 registers for version V0
-#define ENS160_REG_PART_ID          0x00        // 2 byte register
+#define ENS160_REG_PART_ID           0x00        // 2 byte register
 #define ENS160_REG_OPMODE            0x10
 #define ENS160_REG_CONFIG            0x11
-#define ENS160_REG_COMMAND            0x12
-#define ENS160_REG_TEMP_IN            0x13
-#define ENS160_REG_RH_IN            0x15
-#define ENS160_REG_DATA_STATUS        0x20
-#define ENS160_REG_DATA_AQI            0x21
-#define ENS160_REG_DATA_TVOC        0x22
-#define ENS160_REG_DATA_ECO2        0x24
-#define ENS160_REG_DATA_NO2        0x25
-#define ENS160_REG_DATA_BL            0x28
+#define ENS160_REG_COMMAND           0x12
+#define ENS160_REG_TEMP_IN           0x13
+#define ENS160_REG_RH_IN             0x15
+#define ENS160_REG_DATA_STATUS       0x20
+#define ENS160_REG_DATA_AQI          0x21
+#define ENS160_REG_DATA_TVOC         0x22
+#define ENS160_REG_DATA_ECO2         0x24
+#define ENS160_REG_DATA_BL           0x28
 #define ENS160_REG_DATA_T            0x30
-#define ENS160_REG_DATA_RH            0x32
-#define ENS160_REG_DATA_MISR        0x38
-#define ENS160_REG_GPR_WRITE_0        0x40
+#define ENS160_REG_DATA_RH           0x32
+#define ENS160_REG_DATA_MISR         0x38
+#define ENS160_REG_GPR_WRITE_0       0x40
 #define ENS160_REG_GPR_WRITE_1       (ENS160_REG_GPR_WRITE_0 + 1)
 #define ENS160_REG_GPR_WRITE_2       (ENS160_REG_GPR_WRITE_0 + 2)
 #define ENS160_REG_GPR_WRITE_3       (ENS160_REG_GPR_WRITE_0 + 3)
@@ -51,22 +50,22 @@ extern "C" {
 #define ENS160_REG_GPR_READ_7        (ENS160_REG_GPR_READ_0 + 7)
 
 //ENS160 data register fields
-#define ENS160_COMMAND_NOP            0x00
+#define ENS160_COMMAND_NOP           0x00
 #define ENS160_COMMAND_CLRGPR        0xCC
 #define ENS160_COMMAND_GET_APPVER    0x0E
-#define ENS160_COMMAND_GET_HWVER 0x01
-#define ENS160_COMMAND_SETTH        0x02
+#define ENS160_COMMAND_GET_HWVER     0x01
+#define ENS160_COMMAND_SETTH         0x02
 #define ENS160_COMMAND_SETSEQ        0xC2
 
 #define ENS160_MODE_RESET            0xF0
 #define ENS160_MODE_DEP_SLEEP        0x00
-#define ENS160_MODE_IDLE            0x01
-#define ENS160_MODE_STD            0x02
-#define ENS160_MODE_INTERMEDIATE    0x03
-#define ENS160_MODE_CUSTOM        0xC0
-#define ENS160_MODE_D0            0xD0
-#define ENS160_MODE_D1            0xD1
-#define ENS160_MODE_BOOTLOADER    0xB0
+#define ENS160_MODE_IDLE             0x01
+#define ENS160_MODE_STD              0x02
+#define ENS160_MODE_INTERMEDIATE     0x03
+#define ENS160_MODE_CUSTOM           0xC0
+#define ENS160_MODE_D0               0xD0
+#define ENS160_MODE_D1               0xD1
+#define ENS160_MODE_BOOTLOADER       0xB0
 
 #define ENS160_BL_CMD_START            0x02
 #define ENS160_BL_CMD_ERASE_APP        0x04
@@ -213,14 +212,14 @@ esp_err_t ens160_set_environmental_data(i2c_dev_t *dev, float temperature, float
  */
 esp_err_t
 ens160_get_results(i2c_dev_t *dev, bool wait_for_new, ens160_aqi_t *aqi, uint16_t *tvoc, uint16_t *eco2,
-               uint32_t (*resistance)[4], uint32_t (*baseline)[4]);
+                   uint32_t (*resistance)[4], uint32_t (*baseline)[4]);
 
 /**
  * @brief Reset baseline
  * @param dev I2C device descriptor
  * @param error error response
  */
-esp_err_t ens160_reset_baseline(i2c_dev_t *dev, ens160_bl_err_t* err);
+esp_err_t ens160_reset_baseline(i2c_dev_t *dev, ens160_bl_err_t *err);
 
 /**
  * @brief Set mode
