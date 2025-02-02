@@ -681,28 +681,18 @@ esp_err_t ssd1306_draw_vline(ssd1306_t *dev, uint8_t x, uint8_t y, uint8_t h, ss
     return ESP_OK;
 }
 
-/**
- * Find character decriptor in font
- * @param fnt Pointer to font information struct
- * @param c Character
- * @return Character descriptor or NULL if no character found
- */
-const ssd1306_char_t *ssd1306_get_char_desc(const ssd1306_font_t *font, char c)
+const ssd1306_char_t *ssd1306_get_char_desc(const ssd1306_font_t *font, uint16_t c)
 {
     return c < font->char_start || c > font->char_end ? NULL : font->char_descriptors + c - font->char_start;
 }
 
-esp_err_t ssd1306_draw_char(ssd1306_t *dev, uint8_t x, uint8_t y, char c, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width)
+esp_err_t ssd1306_draw_char_desc(ssd1306_t *dev, uint8_t x, uint8_t y, const ssd1306_char_t *d, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width)
 {
-    CHECK_ARG(dev && dev->fb && font && c && x < dev->width && y < dev->height);
+    CHECK_ARG(dev && dev->fb && font && d && x < dev->width && y < dev->height);
 
     uint8_t i, j;
     const uint8_t *bitmap;
     uint8_t line = 0;
-
-    const ssd1306_char_t *d = ssd1306_get_char_desc(font, c);
-    if (d == NULL)
-        return ESP_ERR_NOT_FOUND;
 
     bitmap = font->bitmap + d->offset;
     for (j = 0; j < font->height; ++j)
@@ -742,6 +732,28 @@ esp_err_t ssd1306_draw_char(ssd1306_t *dev, uint8_t x, uint8_t y, char c, const 
     return ESP_OK;
 }
 
+esp_err_t ssd1306_draw_char(ssd1306_t *dev, uint8_t x, uint8_t y, char c, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width)
+{
+    CHECK_ARG(dev && dev->fb && font && c && x < dev->width && y < dev->height);
+
+    const ssd1306_char_t *d = ssd1306_get_char_desc(font, c);
+    if (d == NULL)
+        return ESP_ERR_NOT_FOUND;
+
+    return ssd1306_draw_char_desc(dev, x, y, d, font, foreground, background, width);
+}
+
+esp_err_t ssd1306_draw_codepoint(ssd1306_t *dev, uint8_t x, uint8_t y, uint16_t c, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width)
+{
+    CHECK_ARG(dev && dev->fb && font && c && x < dev->width && y < dev->height);
+
+    const ssd1306_char_t *d = ssd1306_get_char_desc(font, c);
+    if (d == NULL)
+        return ESP_ERR_NOT_FOUND;
+
+    return ssd1306_draw_char_desc(dev, x, y, d, font, foreground, background, width);
+}
+
 esp_err_t ssd1306_draw_string(ssd1306_t *dev, uint8_t x, uint8_t y, const char *str, const ssd1306_font_t *font,
     ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width)
 {
@@ -751,7 +763,27 @@ esp_err_t ssd1306_draw_string(ssd1306_t *dev, uint8_t x, uint8_t y, const char *
     uint8_t w;
 
     while (*str) {
-        CHECK(ssd1306_draw_char(dev, pos, y, *str, font, foreground, background, &w));
+        uint16_t c;
+
+        // Decode UTF-8 character
+        if ((*str & 0x80) == 0) {
+            // Single-byte ASCII
+            c = *str;
+        } else if ((*str & 0xE0) == 0xC0) {
+            // Two-byte sequence
+            c = ((*str & 0x1F) << 6) | (*(str + 1) & 0x3F);
+            str++;
+        } else if ((*str & 0xF0) == 0xE0) {
+            // Three-byte sequence
+            c = ((*str & 0x0F) << 12) | ((*(str + 1) & 0x3F) << 6) | (*(str + 2) & 0x3F);
+            str += 2;
+        } else {
+            // Unsupported character
+            ++str;
+            continue;
+        }
+
+        CHECK(ssd1306_draw_codepoint(dev, pos, y, c, font, foreground, background, &w));
         pos += w;
         ++str;
         if (*str)

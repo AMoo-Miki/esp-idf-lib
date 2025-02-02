@@ -178,9 +178,9 @@ typedef struct
 {
     uint8_t height;                           ///< Character height in pixel, all characters have same height
     uint8_t c;                                ///< Simulation of "C" width in TrueType term, the space between adjacent characters
-    char char_start;                          ///< First character
-    char char_end;                            ///< Last character
-    const ssd1306_char_t *char_descriptors; ///< descriptor for each character
+    uint16_t char_start;                      ///< First character
+    uint16_t char_end;                        ///< Last character
+    const ssd1306_char_t *char_descriptors;   ///< descriptor for each character
     const uint8_t *bitmap;                    ///< Character bitmap
 } ssd1306_font_t;
 
@@ -478,6 +478,9 @@ esp_err_t ssd1306_draw_vline(ssd1306_t *dev, uint8_t x, uint8_t y, uint8_t h, ss
 esp_err_t ssd1306_flush(ssd1306_t *dev);
 
 esp_err_t ssd1306_draw_char(ssd1306_t *dev, uint8_t x, uint8_t y, char c, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width);
+
+esp_err_t ssd1306_draw_double_char(ssd1306_t *dev, uint8_t x, uint8_t y, uint16_t c, const ssd1306_font_t *font, ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width);
+
 esp_err_t ssd1306_draw_string(ssd1306_t *dev, uint8_t x, uint8_t y, const char *str, const ssd1306_font_t *font,
     ssd1306_color_t foreground, ssd1306_color_t background, uint8_t *width);
 
